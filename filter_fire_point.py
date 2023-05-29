@@ -5,6 +5,7 @@ import rasterio.features
 import rasterio.mask
 
 import fiona
+import geopandas as gpd
 import shapely.geometry
 
 
@@ -34,6 +35,12 @@ with rasterio.open('path/to/raster.tif') as src:
     # Find the features with points at pixels with value 1
     df_filtered = df[pixel_vals == 1]
 
+    # Convert the DataFrame to a GeoDataFrame
+    gdf_filtered = gpd.GeoDataFrame(df_filtered, crs=shp.crs)
+
+    # Save the filtered features to a GeoPackage file
+    gdf_filtered.to_file('path/to/filtered_features.gpkg', driver='GPKG')
+
     # Print the results
     print(f"Found {len(df_filtered)} features located at pixels with value 1.")
-    print(df_filtered[['x', 'y']].values)
+    print(gdf_filtered[['x', 'y']].values)
